@@ -11,6 +11,12 @@ ifdef TEST_FILTER
 	TEST_FILTER := -run $(TEST_FILTER)
 endif
 
+install:
+	go build
+	mkdir -p ~/.terraform.d/plugins/
+	cp terraform-provider-okta ~/.terraform.d/plugins/terraform-provider-okta_v9.9.9
+	rm terraform-provider-okta
+
 default: build
 
 build: fmtcheck
