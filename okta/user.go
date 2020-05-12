@@ -400,6 +400,7 @@ func flattenUser(u *okta.User, d *schema.ResourceData) (map[string]interface{}, 
 			attrKey := camelCaseToUnderscore(k)
 
 			if isCustomUserAttr(attrKey) {
+				continue
 				// Supporting any potential type
 				ref := reflect.ValueOf(v)
 				switch ref.Kind() {
