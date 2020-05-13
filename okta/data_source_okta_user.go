@@ -92,6 +92,8 @@ func dataSourceUserRead(d *schema.ResourceData, m interface{}) error {
 		return err
 	}
 
+	setAllGroups(d, client)
+
 	return nil
 }
 

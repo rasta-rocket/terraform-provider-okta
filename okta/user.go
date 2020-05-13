@@ -387,6 +387,28 @@ func setGroups(d *schema.ResourceData, c *okta.Client) error {
 	})
 }
 
+func setAllGroups(d *schema.ResourceData, c *okta.Client) error {
+	// set all groups currently attached to user in state
+	groups, _, err := c.User.ListUserGroups(d.Id(), nil)
+	if err != nil {
+		return err
+	}
+
+	groupIds := make([]interface{}, 0)
+
+	// ignore saving the Everyone group into state so we don't end up with perpetual diffs
+	for _, group := range groups {
+		if group.Type != "BUILT_IN" && group.Type != "APP_GROUP" {
+			groupIds = append(groupIds, group.Id)
+		}
+	}
+
+	// set the custom_profile_attributes values
+	return setNonPrimitives(d, map[string]interface{}{
+		"group_memberships": schema.NewSet(schema.HashString, groupIds),
+	})
+}
+
 func isCustomUserAttr(key string) bool {
 	return !contains(profileKeys, key)
 }
